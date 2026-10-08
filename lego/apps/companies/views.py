@@ -1,7 +1,7 @@
 import csv
 
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Count, F, Q
+from django.db.models import Count, Exists, F, OuterRef, Q, Subquery, Sum
 from django.http import HttpResponse
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
@@ -38,6 +38,7 @@ from lego.apps.companies.serializers import (
     SemesterStatusSerializer,
 )
 from lego.apps.events import constants as event_constants
+from lego.apps.events.models import Pool
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.constants import EDIT
 
@@ -96,6 +97,7 @@ class AdminCompanyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
                 event_constants.FAILURE_UNREGISTER,
             ],
         )
+        pools = Pool.objects.filter(event=OuterRef("pk"))
         events = (
             company.events.filter(
                 start_time__gte=min(semester.start_time for semester in semesters),
@@ -111,23 +113,42 @@ class AdminCompanyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
                     "registrations",
                     filter=active_registration & Q(registrations__pool__isnull=True),
                 ),
+                capacity=Subquery(
+                    pools.values("event")
+                    .annotate(total=Sum("capacity"))
+                    .values("total")
+                ),
+                has_unlimited_pool=Exists(pools.filter(capacity=0)),
             )
-            .values_list("participant_count", "waiting_list_count")
+            .values_list(
+                "participant_count",
+                "waiting_list_count",
+                "capacity",
+                "has_unlimited_pool",
+            )
         )
+        fill_rates = [
+            participants / capacity
+            for participants, _, capacity, has_unlimited_pool in events
+            if capacity and not has_unlimited_pool
+        ]
 
         event_count = len(events)
         return Response(
             {
                 "event_count": event_count,
                 "average_participants": (
-                    sum(participants for participants, _ in events) / event_count
+                    sum(participants for participants, *_ in events) / event_count
                     if event_count
                     else 0
                 ),
                 "average_waiting_list": (
-                    sum(waiting for _, waiting in events) / event_count
+                    sum(waiting for _, waiting, *_ in events) / event_count
                     if event_count
                     else 0
+                ),
+                "average_fill": (
+                    sum(fill_rates) / len(fill_rates) if fill_rates else 0
                 ),
             }
         )

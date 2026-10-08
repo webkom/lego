@@ -453,7 +453,9 @@ class CompanyEventStatisticsTestCase(BaseAPITestCase):
         self.autumn = Semester.objects.get(semester="autumn", year=2017)
         self.users = get_dummy_users(6)
 
-    def _create_event(self, start_time, participants, waiting, company=None):
+    def _create_event(
+        self, start_time, participants, waiting, company=None, capacity=None
+    ):
         event = Event.objects.create(
             title="Bedpres",
             company=company or self.company,
@@ -461,7 +463,10 @@ class CompanyEventStatisticsTestCase(BaseAPITestCase):
             end_time=start_time,
         )
         pool = Pool.objects.create(
-            name="Pool", capacity=participants, event=event, activation_date=start_time
+            name="Pool",
+            capacity=participants if capacity is None else capacity,
+            event=event,
+            activation_date=start_time,
         )
         users = iter(self.users)
         for _ in range(participants):
@@ -506,13 +511,23 @@ class CompanyEventStatisticsTestCase(BaseAPITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
             response.json(),
-            {"eventCount": 2, "averageParticipants": 3, "averageWaitingList": 1},
+            {
+                "eventCount": 2,
+                "averageParticipants": 3,
+                "averageWaitingList": 1,
+                "averageFill": 1,
+            },
         )
 
         response = self._get_statistics(self.autumn, self.autumn)
         self.assertEqual(
             response.json(),
-            {"eventCount": 1, "averageParticipants": 2, "averageWaitingList": 0},
+            {
+                "eventCount": 1,
+                "averageParticipants": 2,
+                "averageWaitingList": 0,
+                "averageFill": 1,
+            },
         )
 
     def test_unregistered_users_are_not_counted(self):
@@ -530,8 +545,40 @@ class CompanyEventStatisticsTestCase(BaseAPITestCase):
         response = self._get_statistics(self.spring, self.spring)
         self.assertEqual(
             response.json(),
-            {"eventCount": 1, "averageParticipants": 1, "averageWaitingList": 0},
+            {
+                "eventCount": 1,
+                "averageParticipants": 1,
+                "averageWaitingList": 0,
+                "averageFill": 0.5,
+            },
         )
+
+    def test_average_fill(self):
+        oslo = ZoneInfo("Europe/Oslo")
+        self._create_event(
+            datetime(2017, 3, 1, tzinfo=oslo), participants=2, waiting=0, capacity=4
+        )
+        self._create_event(
+            datetime(2017, 4, 1, tzinfo=oslo), participants=3, waiting=1, capacity=3
+        )
+        # An event with two pools fills based on their combined capacity
+        event = self._create_event(
+            datetime(2017, 5, 1, tzinfo=oslo), participants=1, waiting=0, capacity=1
+        )
+        Pool.objects.create(
+            name="Pool 2", capacity=3, event=event, activation_date=event.start_time
+        )
+        # Unlimited capacity is excluded from the fill average
+        self._create_event(
+            datetime(2017, 6, 1, tzinfo=oslo), participants=2, waiting=0, capacity=0
+        )
+
+        AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+
+        response = self._get_statistics(self.spring, self.spring)
+        self.assertEqual(response.json()["eventCount"], 4)
+        self.assertAlmostEqual(response.json()["averageFill"], (0.5 + 1 + 0.25) / 3)
 
     def test_without_events(self):
         AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
@@ -539,7 +586,12 @@ class CompanyEventStatisticsTestCase(BaseAPITestCase):
         response = self._get_statistics(self.spring, self.autumn)
         self.assertEqual(
             response.json(),
-            {"eventCount": 0, "averageParticipants": 0, "averageWaitingList": 0},
+            {
+                "eventCount": 0,
+                "averageParticipants": 0,
+                "averageWaitingList": 0,
+                "averageFill": 0,
+            },
         )
 
     def test_invalid_semester(self):
