@@ -1,7 +1,13 @@
+from datetime import datetime
+from zoneinfo import ZoneInfo
+
 from django.urls import reverse
 from rest_framework import status
 
-from lego.apps.companies.models import StudentCompanyContact
+from lego.apps.companies.models import Company, Semester, StudentCompanyContact
+from lego.apps.events.constants import SUCCESS_REGISTER, SUCCESS_UNREGISTER
+from lego.apps.events.models import Event, Pool, Registration
+from lego.apps.events.tests.utils import get_dummy_users
 from lego.apps.users.models import AbakusGroup, User
 from lego.utils.test_utils import BaseAPITestCase
 
@@ -57,6 +63,10 @@ def _get_bdb_list_url():
 
 def _get_bdb_detail_url(pk):
     return reverse("api:v1:bdb-detail", kwargs={"pk": pk})
+
+
+def _get_bdb_event_statistics_url(pk):
+    return reverse("api:v1:bdb-event-statistics", kwargs={"pk": pk})
 
 
 def _get_semester_status_list_url(company_pk):
@@ -431,3 +441,163 @@ class FilterCompaniesTestCase(BaseAPITestCase):
         )
         self.assertEqual(company_response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(company_response.json()["results"]), 0)
+
+
+class CompanyEventStatisticsTestCase(BaseAPITestCase):
+    fixtures = ["test_abakus_groups.yaml", "test_companies.yaml", "test_users.yaml"]
+
+    def setUp(self):
+        self.abakus_user = User.objects.all().first()
+        self.company = Company.objects.get(pk=1)
+        self.spring = Semester.objects.get(semester="spring", year=2017)
+        self.autumn = Semester.objects.get(semester="autumn", year=2017)
+        self.users = get_dummy_users(6)
+
+    def _create_event(
+        self, start_time, participants, waiting, company=None, capacity=None
+    ):
+        event = Event.objects.create(
+            title="Bedpres",
+            company=company or self.company,
+            start_time=start_time,
+            end_time=start_time,
+        )
+        pool = Pool.objects.create(
+            name="Pool",
+            capacity=participants if capacity is None else capacity,
+            event=event,
+            activation_date=start_time,
+        )
+        users = iter(self.users)
+        for _ in range(participants):
+            Registration.objects.create(
+                event=event, user=next(users), pool=pool, status=SUCCESS_REGISTER
+            )
+        for _ in range(waiting):
+            Registration.objects.create(
+                event=event, user=next(users), status=SUCCESS_REGISTER
+            )
+        return event
+
+    def _get_statistics(self, from_semester, to_semester):
+        return self.client.get(
+            _get_bdb_event_statistics_url(self.company.pk),
+            {"from_semester": from_semester.pk, "to_semester": to_semester.pk},
+        )
+
+    def test_with_abakus_user(self):
+        AbakusGroup.objects.get(name="Abakus").add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+        response = self._get_statistics(self.spring, self.autumn)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_statistics_within_semester_range(self):
+        oslo = ZoneInfo("Europe/Oslo")
+        self._create_event(datetime(2017, 3, 1, tzinfo=oslo), participants=4, waiting=2)
+        self._create_event(datetime(2017, 9, 1, tzinfo=oslo), participants=2, waiting=0)
+        # Outside the range or hosted by another company
+        self._create_event(datetime(2018, 1, 1, tzinfo=oslo), participants=5, waiting=1)
+        self._create_event(
+            datetime(2017, 3, 1, tzinfo=oslo),
+            participants=1,
+            waiting=0,
+            company=Company.objects.get(pk=2),
+        )
+
+        AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+
+        response = self._get_statistics(self.spring, self.autumn)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            response.json(),
+            {
+                "eventCount": 2,
+                "averageParticipants": 3,
+                "averageWaitingList": 1,
+                "averageFill": 1,
+            },
+        )
+
+        response = self._get_statistics(self.autumn, self.autumn)
+        self.assertEqual(
+            response.json(),
+            {
+                "eventCount": 1,
+                "averageParticipants": 2,
+                "averageWaitingList": 0,
+                "averageFill": 1,
+            },
+        )
+
+    def test_unregistered_users_are_not_counted(self):
+        event = self._create_event(
+            datetime(2017, 3, 1, tzinfo=ZoneInfo("Europe/Oslo")),
+            participants=2,
+            waiting=1,
+        )
+        event.registrations.filter(pool=None).update(status=SUCCESS_UNREGISTER)
+        event.registrations.filter(pool__isnull=False).first().delete()
+
+        AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+
+        response = self._get_statistics(self.spring, self.spring)
+        self.assertEqual(
+            response.json(),
+            {
+                "eventCount": 1,
+                "averageParticipants": 1,
+                "averageWaitingList": 0,
+                "averageFill": 0.5,
+            },
+        )
+
+    def test_average_fill(self):
+        oslo = ZoneInfo("Europe/Oslo")
+        self._create_event(
+            datetime(2017, 3, 1, tzinfo=oslo), participants=2, waiting=0, capacity=4
+        )
+        self._create_event(
+            datetime(2017, 4, 1, tzinfo=oslo), participants=3, waiting=1, capacity=3
+        )
+        # An event with two pools fills based on their combined capacity
+        event = self._create_event(
+            datetime(2017, 5, 1, tzinfo=oslo), participants=1, waiting=0, capacity=1
+        )
+        Pool.objects.create(
+            name="Pool 2", capacity=3, event=event, activation_date=event.start_time
+        )
+        # Unlimited capacity is excluded from the fill average
+        self._create_event(
+            datetime(2017, 6, 1, tzinfo=oslo), participants=2, waiting=0, capacity=0
+        )
+
+        AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+
+        response = self._get_statistics(self.spring, self.spring)
+        self.assertEqual(response.json()["eventCount"], 4)
+        self.assertAlmostEqual(response.json()["averageFill"], (0.5 + 1 + 0.25) / 3)
+
+    def test_without_events(self):
+        AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+        response = self._get_statistics(self.spring, self.autumn)
+        self.assertEqual(
+            response.json(),
+            {
+                "eventCount": 0,
+                "averageParticipants": 0,
+                "averageWaitingList": 0,
+                "averageFill": 0,
+            },
+        )
+
+    def test_invalid_semester(self):
+        AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+        response = self.client.get(
+            _get_bdb_event_statistics_url(self.company.pk), {"from_semester": 1}
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

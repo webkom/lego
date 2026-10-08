@@ -65,6 +65,7 @@ dependencies = [
     "weasyprint>=70.0,<71",
     "matplotlib>=3.11.2,<4",
     "django-expo-notifications>=0.8.0,<0.9",
+    "djangorestframework-stubs>=3.18.1",
 ]
 
 [dependency-groups]

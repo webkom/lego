@@ -1,3 +1,6 @@
+from datetime import datetime
+from zoneinfo import ZoneInfo
+
 from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
@@ -38,6 +41,18 @@ class Semester(BasisModel):
     class Meta:
         unique_together = ("year", "semester")
         permission_handler = SemesterPermissionHandler()
+
+    @property
+    def start_time(self) -> datetime:
+        month = 1 if self.semester == SPRING else 8
+        return datetime(self.year, month, 1, tzinfo=ZoneInfo("Europe/Oslo"))
+
+    @property
+    def end_time(self) -> datetime:
+        """Exclusive end of the semester, matching the start of the next one."""
+        if self.semester == SPRING:
+            return datetime(self.year, 8, 1, tzinfo=ZoneInfo("Europe/Oslo"))
+        return datetime(self.year + 1, 1, 1, tzinfo=ZoneInfo("Europe/Oslo"))
 
 
 class Company(BasisModel):

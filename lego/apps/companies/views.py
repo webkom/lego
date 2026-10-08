@@ -1,6 +1,7 @@
 import csv
 
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Count, Exists, F, OuterRef, Q, Subquery, Sum
 from django.http import HttpResponse
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
@@ -36,6 +37,8 @@ from lego.apps.companies.serializers import (
     SemesterStatusDetailSerializer,
     SemesterStatusSerializer,
 )
+from lego.apps.events import constants as event_constants
+from lego.apps.events.models import Pool
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.constants import EDIT
 
@@ -70,6 +73,85 @@ class AdminCompanyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             return CompanyAdminListSerializer
 
         return CompanyAdminDetailSerializer
+
+    @action(detail=True, methods=["GET"], url_path="event-statistics")
+    def event_statistics(self, request, *args, **kwargs):
+        company = self.get_object()
+
+        try:
+            semesters = [
+                Semester.objects.get(pk=int(request.query_params[param]))
+                for param in ("from_semester", "to_semester")
+            ]
+        except (KeyError, ValueError, Semester.DoesNotExist):
+            return Response(
+                {"detail": "from_semester and to_semester must be valid semester ids"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        active_registration = Q(
+            registrations__deleted=False,
+            registrations__unregistration_date=None,
+            registrations__status__in=[
+                event_constants.SUCCESS_REGISTER,
+                event_constants.FAILURE_UNREGISTER,
+            ],
+        )
+        pools = Pool.objects.filter(event=OuterRef("pk"))
+        events = (
+            company.events.filter(
+                start_time__gte=min(semester.start_time for semester in semesters),
+                start_time__lt=max(semester.end_time for semester in semesters),
+            )
+            .annotate(
+                participant_count=Count(
+                    "registrations",
+                    filter=active_registration & Q(registrations__pool__isnull=False),
+                )
+                + F("legacy_registration_count"),
+                waiting_list_count=Count(
+                    "registrations",
+                    filter=active_registration & Q(registrations__pool__isnull=True),
+                ),
+                capacity=Subquery(
+                    pools.values("event")
+                    .annotate(total=Sum("capacity"))
+                    .values("total")
+                ),
+                has_unlimited_pool=Exists(pools.filter(capacity=0)),
+            )
+            .values_list(
+                "participant_count",
+                "waiting_list_count",
+                "capacity",
+                "has_unlimited_pool",
+            )
+        )
+        fill_rates = [
+            participants / capacity
+            for participants, _, capacity, has_unlimited_pool in events
+            if capacity and not has_unlimited_pool
+        ]
+
+        event_count = len(events)
+        return Response(
+            {
+                "event_count": event_count,
+                "average_participants": (
+                    sum(participants for participants, *_ in events) / event_count
+                    if event_count
+                    else 0
+                ),
+                "average_waiting_list": (
+                    sum(waiting for _, waiting, *_ in events) / event_count
+                    if event_count
+                    else 0
+                ),
+                "average_fill": (
+                    sum(fill_rates) / len(fill_rates) if fill_rates else 0
+                ),
+            }
+        )
 
 
 class CompanyViewSet(
