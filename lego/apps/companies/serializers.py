@@ -134,7 +134,6 @@ class CompanyListSerializer(BasisModelSerializer):
             "logo",
             "logo_placeholder",
             "thumbnail",
-            "active",
         )
 
 
@@ -149,7 +148,6 @@ class CompanyAdminListSerializer(BasisModelSerializer):
             "name",
             "semester_statuses",
             "student_contacts",
-            "active",
         )
 
     def get_student_contacts(self, obj):
@@ -234,7 +232,6 @@ class CompanyAdminDetailSerializer(BasisModelSerializer):
             "comments",
             "content_target",
             "semester_statuses",
-            "active",
             "logo",
             "files",
             "company_contacts",

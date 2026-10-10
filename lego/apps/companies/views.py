@@ -78,7 +78,7 @@ class CompanyViewSet(
     RetrieveModelMixin,
     viewsets.GenericViewSet,
 ):
-    queryset = Company.objects.all().filter(active=True)
+    queryset = Company.objects.all()
     filterset_class = CompanyFilterSet
     ordering = "name"
 
