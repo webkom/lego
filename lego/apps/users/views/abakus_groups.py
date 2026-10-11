@@ -27,19 +27,22 @@ class AbakusGroupViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         if self.action == "list":
             return PublicListAbakusGroupSerializer
 
-        if self.action == "create":
-            return DetailedAbakusGroupSerializer
-
-        if self.action == "retrieve":
-            abakus_group = self.get_object()
-            if self.request.user.has_perm(EDIT, abakus_group):
-                return DetailedAbakusGroupSerializer
-
-            if abakus_group.type in constants.PUBLIC_GROUPS:
-                return PublicDetailedAbakusGroupSerializer
-            return PublicAbakusGroupSerializer
-
         return DetailedAbakusGroupSerializer
+
+    def get_serializer(self, *args, **kwargs):
+        if self.action == "retrieve" and args:
+            abakus_group = args[0]
+
+            if self.request.user.has_perm(EDIT, abakus_group):
+                serializer_class = DetailedAbakusGroupSerializer
+            elif abakus_group.type in constants.PUBLIC_GROUPS:
+                serializer_class = PublicDetailedAbakusGroupSerializer
+            else:
+                serializer_class = PublicAbakusGroupSerializer
+
+            kwargs.setdefault("context", self.get_serializer_context())
+            return serializer_class(*args, **kwargs)
+        return super().get_serializer(*args, **kwargs)
 
     def get_queryset(self) -> QuerySet[AbakusGroup]:
         if self.action == "retrieve":
