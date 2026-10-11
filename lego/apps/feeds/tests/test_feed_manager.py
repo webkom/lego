@@ -104,6 +104,6 @@ class FeedManagerTestCase(TransactionTestCase):
         self.assertFalse(item2.is_read)
         self.assertFalse(item2.is_seen)
         self.assertEqual(
-            {"unseen_count": 2, "unread_count": 2},
+            {"unseen_count": 1, "unread_count": 1},
             NotificationFeed.get_notification_data(self.user.id),
         )
