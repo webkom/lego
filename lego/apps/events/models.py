@@ -234,7 +234,6 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 reason="no_active_pool",
             )
 
-        penalties: int = 0
         unanswered_surveys = user.unanswered_surveys()
         if len(unanswered_surveys) > 0:
             return RegistrationEligibility(
@@ -242,11 +241,13 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 reason="unanswered_surveys",
             )
 
+        # MARK: This seems to be duplicated from the get_earliest_registration_time function
+        penalties: int = 0
         if self.heed_penalties:
             offset = Penalty.penalty_offset(current_time, forwards=False)
             penalties = (
                 Penalty.objects.filter(
-                    user=user, created_at__gt=current_time - offset
+                    user=user, created_at__gt=current_time - offset, created_at_lte=current_time
                 ).aggregate(Sum("weight"))["weight__sum"]
                 or 0
             )
@@ -280,13 +281,23 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 can_register_now=False,
                 reason="no_available_pools",
             )
+
+        if penalties > 2:
+            return RegistrationEligibility(
+                can_register_now=False,
+                will_be_waiting_list=True,
+                reason="too_many_penalties",
+            )
+
         earliest_reg: Optional[date] = self.get_earliest_registration_time(
             user, possible_pools, penalties
         )
+
+
         if earliest_reg and earliest_reg > current_time:
             return RegistrationEligibility(
                 can_register_now=False,
-                reason="not_open_yet",
+                reason="penalty_induced_delayed_registration",
             )
 
         return RegistrationEligibility(
