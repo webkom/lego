@@ -1,5 +1,4 @@
 from __future__ import annotations
-from lego.apps.events.registration_eligibility import RegistrationEligibility
 
 from datetime import date, datetime, timedelta
 from typing import Any, Iterator, Optional
@@ -24,17 +23,15 @@ from lego.apps.events.exceptions import (
     RegistrationsExistInPool,
     UnansweredSurveyException,
 )
-from lego.apps.surveys.models import (
-    Survey
-)
-
 from lego.apps.events.permissions import (
     EventPermissionHandler,
     RegistrationPermissionHandler,
 )
+from lego.apps.events.registration_eligibility import RegistrationEligibility
 from lego.apps.files.models import FileField
 from lego.apps.followers.models import FollowEvent
 from lego.apps.permissions.models import ObjectPermissionsModel
+from lego.apps.surveys.models import Survey
 from lego.apps.users.constants import AUTUMN, PENALTY_TYPES, PENALTY_WEIGHTS, SPRING
 from lego.apps.users.models import AbakusGroup, Membership, Penalty, User
 from lego.utils.decorators import abakus_cached_property
@@ -219,6 +216,11 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
         current_time = current_time or timezone.now()
         # Get current user pool
+
+        all_pools = self.pools.all()
+        if not all_pools:
+            return RegistrationEligibility(can_register_now=False, reason=constants.RegistrationEligibilityReason.NO_AVAILABLE_POOLS)
+
         user_pools = self.get_possible_pools(user, future=False)
 
         eligible_pools = []
@@ -231,14 +233,14 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         if len(eligible_pools) == 0:
             return RegistrationEligibility(
                 can_register_now=False,
-                reason="no_active_pool",
+                reason=constants.RegistrationEligibilityReason.NO_ELIGIBLE_POOL,
             )
 
         unanswered_surveys = user.unanswered_surveys()
         if len(unanswered_surveys) > 0:
             return RegistrationEligibility(
                 can_register_now=False,
-                reason="unanswered_surveys",
+                reason=constants.RegistrationEligibilityReason.UNANSWERED_SURVEYS,
             )
 
         # MARK: This seems to be duplicated from the get_earliest_registration_time function
@@ -247,7 +249,9 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             offset = Penalty.penalty_offset(current_time, forwards=False)
             penalties = (
                 Penalty.objects.filter(
-                    user=user, created_at__gt=current_time - offset, created_at_lte=current_time
+                    user=user,
+                    created_at__gt=current_time - offset,
+                    created_at__lte=current_time,
                 ).aggregate(Sum("weight"))["weight__sum"]
                 or 0
             )
@@ -255,7 +259,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         if self.registration_close_time < current_time:
             return RegistrationEligibility(
                 can_register_now=False,
-                reason="event_closed",
+                reason=constants.RegistrationEligibilityReason.EVENT_CLOSED,
             )
 
         current_semester = AUTUMN if self.start_time.month > 7 else SPRING
@@ -265,7 +269,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         ):
             return RegistrationEligibility(
                 can_register_now=False,
-                reason="no_photo_consents",
+                reason=constants.RegistrationEligibilityReason.NO_PHOTO_CONSENTS,
             )
         all_pools: QuerySet[Pool] = self.pools.all()
         possible_pools = self.get_possible_pools(
@@ -274,30 +278,31 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         if not self.is_ready:
             return RegistrationEligibility(
                 can_register_now=False,
-                reason="event_not_ready",
+                reason=constants.RegistrationEligibilityReason.EVENT_NOT_READY,
             )
         if not possible_pools:
             return RegistrationEligibility(
                 can_register_now=False,
-                reason="no_available_pools",
+                reason=constants.RegistrationEligibilityReason.NO_AVAILABLE_POOLS,
             )
 
         if penalties > 2:
             return RegistrationEligibility(
                 can_register_now=False,
                 will_be_waiting_list=True,
-                reason="too_many_penalties",
+                reason=constants.RegistrationEligibilityReason.TOO_MANY_PENALTIES,
             )
 
         earliest_reg: Optional[date] = self.get_earliest_registration_time(
             user, possible_pools, penalties
         )
 
-
         if earliest_reg and earliest_reg > current_time:
             return RegistrationEligibility(
                 can_register_now=False,
-                reason="penalty_induced_delayed_registration",
+                can_register_later=True,
+                reason=constants.RegistrationEligibilityReason.PENALTY_INDUCED_DELAYED_REGISTRATION,
+                delay_until=earliest_reg,
             )
 
         return RegistrationEligibility(
@@ -1141,26 +1146,20 @@ class Registration(BasisModel):
         self.save(update_fields=kwargs.keys())
         return self
 
+
 class RegistrationEligibilityCache(BasisModel):
-    class Reason(models.TextChoices):
-        NONE = "none", "None"
-        NO_ACTIVE_POOL = "no_active_pool", "No active pool"
-        UNANSWERED_SURVEYS = "unanswered_surveys", "Unanswered surveys"
-        EVENT_CLOSED = "event_closed", "Event closed"
-        NO_PHOTO_CONSENTS = "no_photo_consents", "No photo consents"
-        EVENT_NOT_READY = "event_not_ready", "Event not ready"
-        NO_AVAILABLE_POOLS = "no_available_pools", "No available pools"
-        NOT_OPEN_YET = "not_open_yet", "Not open yet"
+    Reason = constants.RegistrationEligibilityReason
 
     user = models.ForeignKey(
-        User, related_name="registration_eligibilities", on_delete=models.CASCADE 
+        User, related_name="registration_eligibilities", on_delete=models.CASCADE
     )
     event = models.ForeignKey(
         Event, related_name="registration_eligibilities", on_delete=models.CASCADE
     )
 
     can_register_now = models.BooleanField(null=False)
-    will_be_waiting_list = models.BooleanField(null=True) 
+    can_register_later = models.BooleanField(null=True)
+    will_be_waiting_list = models.BooleanField(null=True)
     is_registration_delayed = models.BooleanField(null=True)
 
     reason = models.CharField(max_length=64, choices=Reason.choices, null=True)
@@ -1169,7 +1168,9 @@ class RegistrationEligibilityCache(BasisModel):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=["user", "event"], name="uniq_req_elig_cache")
+            models.UniqueConstraint(
+                fields=["user", "event"], name="uniq_req_elig_cache"
+            )
         ]
         # indexes = [
         #     models.Index(fields=["event", "user"])

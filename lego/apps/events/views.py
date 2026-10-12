@@ -94,6 +94,7 @@ def get_registration_eligibility(event: Event, user: User) -> dict[str, Any]:
         # Handle the cached eligibility
         return {
             "canRegisterNow": cached_eligibility.can_register_now,
+            "canRegisterLater": cached_eligibility.can_register_later,
             "reason": cached_eligibility.reason,
             "isRegistrationDelayed": cached_eligibility.is_registration_delayed,
             "delayUntil": cached_eligibility.delay_until,
@@ -116,6 +117,7 @@ def get_registration_eligibility(event: Event, user: User) -> dict[str, Any]:
         event=event,
         user=user,
         can_register_now=can_register_status.can_register_now,
+        can_register_later=can_register_status.can_register_later,
         reason=can_register_status.reason,
         is_registration_delayed=is_registration_delayed,
         delay_until=delay_until,
@@ -128,6 +130,7 @@ def get_registration_eligibility(event: Event, user: User) -> dict[str, Any]:
         "isRegistrationDelayed": is_registration_delayed,
         "delayUntil": delay_until,
         "willBeWaitingList": will_be_waiting_list,
+        "canRegisterLater": can_register_status.can_register_later,
     }
 
 class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):

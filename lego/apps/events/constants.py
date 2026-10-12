@@ -121,6 +121,23 @@ class PRESENCE_CHOICES(models.TextChoices):
     NOT_PRESENT = "NOT_PRESENT"
 
 
+class RegistrationEligibilityReason(models.TextChoices):
+    NONE = "none", "None"
+    NO_ACTIVE_POOL = "no_active_pool", "No active pool"
+    NO_ELIGIBLE_POOL = "no_eligible_pool", "No eligible pool"
+    UNANSWERED_SURVEYS = "unanswered_surveys", "Unanswered surveys"
+    EVENT_CLOSED = "event_closed", "Event closed"
+    NO_PHOTO_CONSENTS = "no_photo_consents", "No photo consents"
+    EVENT_NOT_READY = "event_not_ready", "Event not ready"
+    NO_AVAILABLE_POOLS = "no_available_pools", "No available pools"
+    NOT_OPEN_YET = "not_open_yet", "Not open yet"
+    TOO_MANY_PENALTIES = "too_many_penalties", "Too many penalties"
+    PENALTY_INDUCED_DELAYED_REGISTRATION = (
+        "penalty_induced_delayed_registration",
+        "Penalty induced delayed registration",
+    )
+
+
 UNKNOWN = "UNKNOWN"
 LEGACY_PHOTO_CONSENT = "PHOTO_CONSENT"
 LEGACY_PHOTO_NOT_CONSENT = "PHOTO_NOT_CONSENT"
