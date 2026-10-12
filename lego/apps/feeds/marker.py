@@ -8,44 +8,58 @@ class MarkerModelMixin:
 
     @classmethod
     def mark_all(cls, feed_id, seen, read):
-        storage = RedisListStorage(feed_id)
+        """
+        Mark every activity in the feed.
+        """
         args = []
         if seen:
             args.append("unseen")
         if read:
             args.append("unread")
-        storage.flush(*args)
+        if args:
+            RedisListStorage(feed_id).flush(*args)
+
+    @classmethod
+    def mark_activities(cls, feed_id, activities, seen, read):
+        """
+        Mark a set of activity ids.
+        """
+        activities = [str(activity) for activity in activities]
+        if not activities:
+            return
+
+        kwargs = {}
+        if seen:
+            kwargs["unseen"] = activities
+        if read:
+            kwargs["unread"] = activities
+        if kwargs:
+            RedisListStorage(feed_id).remove(**kwargs)
 
     @classmethod
     def mark_activity(cls, feed_id, activity, seen, read):
-        storage = RedisListStorage(feed_id)
-        kwargs = {}
-        if seen:
-            kwargs["unseen"] = [activity]
-        if read:
-            kwargs["unread"] = [activity]
-        storage.remove(**kwargs)
+        cls.mark_activities(feed_id, [activity], seen, read)
 
     @classmethod
     def mark_insert_activity(cls, feed_id, activity):
-        storage = RedisListStorage(feed_id)
-        kwargs = {"unseen": [activity], "unread": [activity]}
-        storage.add(**kwargs)
+        RedisListStorage(feed_id).add(unseen=[str(activity)], unread=[str(activity)])
 
     @classmethod
     def get_notification_data(cls, feed_id):
-        storage = RedisListStorage(feed_id)
-        unseen, unread = storage.count("unseen", "unread")
+        unseen, unread = RedisListStorage(feed_id).count("unseen", "unread")
         return {"unseen_count": unseen, "unread_count": unread}
+
+    def _activity_ids(self):
+        return {str(activity.activity_id) for activity in self.activities}
+
+    def _is_cleared(self, list_name):
+        marked = set(RedisListStorage(self.feed_id).get(list_name))
+        return marked.isdisjoint(self._activity_ids())
 
     @property
     def is_seen(self):
-        storage = RedisListStorage(self.feed_id)
-        unseen = storage.get("unseen")
-        return self.id not in unseen
+        return self._is_cleared("unseen")
 
     @property
     def is_read(self):
-        storage = RedisListStorage(self.feed_id)
-        unread = storage.get("unread")
-        return self.id not in unread
+        return self._is_cleared("unread")

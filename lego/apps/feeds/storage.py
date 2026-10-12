@@ -36,6 +36,11 @@ class RedisListStorage:
             else:
                 return tuple(results)
 
+    def _decode(self, item):
+        if isinstance(item, bytes):
+            item = item.decode()
+        return self.data_type(item)
+
     def add(self, **kwargs):
         if kwargs:
             pipe = self.redis.pipeline()
@@ -73,7 +78,7 @@ class RedisListStorage:
             for key in keys:
                 pipe.lrange(key, 0, -1)
             results = pipe.execute()
-            results = [list(map(self.data_type, items)) for items in results]
+            results = [[self._decode(item) for item in items] for items in results]
             return self.to_result(results)
 
     def flush(self, *args):
