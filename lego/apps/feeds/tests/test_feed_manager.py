@@ -15,6 +15,7 @@ class FeedManagerTestCase(TransactionTestCase):
     def setUp(self):
         self.manager = feed_manager
         self.user = User.objects.get(id=1)
+        NotificationFeed.mark_all(self.user.id, seen=True, read=True)
 
     def tearDown(self):
         NotificationFeed.mark_all(self.user.id, seen=True, read=True)
