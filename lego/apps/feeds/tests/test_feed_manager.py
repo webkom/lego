@@ -17,36 +17,6 @@ class FeedManagerTestCase(TransactionTestCase):
         self.user = User.objects.get(id=1)
         NotificationFeed.mark_all(self.user.id, seen=True, read=True)
 
-    def tearDown(self):
-        NotificationFeed.mark_all(self.user.id, seen=True, read=True)
-
-    def _add_announcement(self):
-        announcement = Announcement.objects.create(message="Test announcement")
-        self.manager.add_activity(
-            Activity(
-                actor=self.user,
-                verb=AnnouncementVerb,
-                object=announcement,
-                time=announcement.created_at,
-            ),
-            [self.user.id],
-            [NotificationFeed],
-        )
-
-    def _add_meeting_invitation(self, meeting_id=1):
-        invitation, _ = Meeting.objects.get(id=meeting_id).invite_user(self.user)
-        self.manager.add_activity(
-            Activity(
-                actor=self.user,
-                verb=MeetingInvitationVerb,
-                object=invitation,
-                target=invitation.user,
-                time=invitation.created_at,
-            ),
-            [self.user.id],
-            [NotificationFeed],
-        )
-
     def test_meeting_invitation_activity(self):
         meeting = Meeting.objects.get(id=1)
         meeting2 = Meeting.objects.get(id=2)
@@ -84,8 +54,30 @@ class FeedManagerTestCase(TransactionTestCase):
         self.assertEqual(0, NotificationFeed.objects.count())
 
     def test_mark_activities(self):
-        self._add_announcement()
-        self._add_meeting_invitation()
+        announcement = Announcement.objects.create(message="Test announcement")
+        self.manager.add_activity(
+            Activity(
+                actor=self.user,
+                verb=AnnouncementVerb,
+                object=announcement,
+                time=announcement.created_at,
+            ),
+            [self.user.id],
+            [NotificationFeed],
+        )
+
+        invitation, _ = Meeting.objects.get(id=1).invite_user(self.user)
+        self.manager.add_activity(
+            Activity(
+                actor=self.user,
+                verb=MeetingInvitationVerb,
+                object=invitation,
+                target=invitation.user,
+                time=invitation.created_at,
+            ),
+            [self.user.id],
+            [NotificationFeed],
+        )
 
         item1, item2 = NotificationFeed.objects.order_by("pk")
         self.assertFalse(item1.is_read)
