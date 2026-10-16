@@ -78,3 +78,6 @@ google-credentials.json
 
 # vscode
 .vscode/
+
+# Dump file for syncing local database with staging database
+dump.sql

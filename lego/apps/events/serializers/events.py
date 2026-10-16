@@ -52,16 +52,15 @@ from lego.utils.serializers import (
 
 
 class RegistrationEligibilitySerializer(serializers.Serializer):
-    can_register_now = serializers.BooleanField()
     reason = serializers.ChoiceField(
         choices=constants.RegistrationEligibilityReason.choices,
         allow_null=True,
         required=False,
     )
     is_registration_delayed = serializers.BooleanField(allow_null=True, required=False)
-    delay_until = serializers.DateTimeField(allow_null=True, required=False)
+    earliest_registration_time = serializers.DateTimeField(allow_null=True, required=False)
     will_be_waiting_list = serializers.BooleanField(allow_null=True, required=False)
-    can_register_later = serializers.BooleanField(allow_null=True, required=False)
+    registration_disallowed = serializers.BooleanField(allow_null=True, required=False)
 
 
 class EventPublicSerializer(BasisModelSerializer):

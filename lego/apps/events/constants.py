@@ -129,7 +129,7 @@ class RegistrationEligibilityReason(models.TextChoices):
     EVENT_CLOSED = "event_closed", "Event closed"
     NO_PHOTO_CONSENTS = "no_photo_consents", "No photo consents"
     EVENT_NOT_READY = "event_not_ready", "Event not ready"
-    NO_AVAILABLE_POOLS = "no_available_pools", "No available pools"
+    NO_REGISTRATION = "no_registration", "No registration"
     NOT_OPEN_YET = "not_open_yet", "Not open yet"
     TOO_MANY_PENALTIES = "too_many_penalties", "Too many penalties"
     PENALTY_INDUCED_DELAYED_REGISTRATION = (

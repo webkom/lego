@@ -213,13 +213,17 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         user: User,
         current_time: Optional[datetime] = None,
     ):
+        """
+            Evaluates if a user can register for the event now, and if not, why not.
+            Also evaluates if a user can register for the event later, and if so, when.
+        """
 
         current_time = current_time or timezone.now()
         # Get current user pool
 
         all_pools = self.pools.all()
         if not all_pools:
-            return RegistrationEligibility(can_register_now=False, reason=constants.RegistrationEligibilityReason.NO_AVAILABLE_POOLS)
+            return RegistrationEligibility(reason=constants.RegistrationEligibilityReason.NO_REGISTRATION)
 
         user_pools = self.get_possible_pools(user, future=False)
 
@@ -232,14 +236,14 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
         if len(eligible_pools) == 0:
             return RegistrationEligibility(
-                can_register_now=False,
                 reason=constants.RegistrationEligibilityReason.NO_ELIGIBLE_POOL,
+                registration_disallowed=True
             )
 
         unanswered_surveys = user.unanswered_surveys()
         if len(unanswered_surveys) > 0:
             return RegistrationEligibility(
-                can_register_now=False,
+                registration_disallowed=True,
                 reason=constants.RegistrationEligibilityReason.UNANSWERED_SURVEYS,
             )
 
@@ -258,7 +262,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
         if self.registration_close_time < current_time:
             return RegistrationEligibility(
-                can_register_now=False,
+                registration_disallowed=True,
                 reason=constants.RegistrationEligibilityReason.EVENT_CLOSED,
             )
 
@@ -268,7 +272,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             current_semester,
         ):
             return RegistrationEligibility(
-                can_register_now=False,
+                registration_disallowed=True,
                 reason=constants.RegistrationEligibilityReason.NO_PHOTO_CONSENTS,
             )
         all_pools: QuerySet[Pool] = self.pools.all()
@@ -277,18 +281,17 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         )
         if not self.is_ready:
             return RegistrationEligibility(
-                can_register_now=False,
                 reason=constants.RegistrationEligibilityReason.EVENT_NOT_READY,
             )
+
         if not possible_pools:
             return RegistrationEligibility(
-                can_register_now=False,
-                reason=constants.RegistrationEligibilityReason.NO_AVAILABLE_POOLS,
+                registration_disallowed=True,
+                reason=constants.RegistrationEligibilityReason.NO_ELIGIBLE_POOL,
             )
 
         if penalties > 2:
             return RegistrationEligibility(
-                can_register_now=False,
                 will_be_waiting_list=True,
                 reason=constants.RegistrationEligibilityReason.TOO_MANY_PENALTIES,
             )
@@ -299,14 +302,14 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
         if earliest_reg and earliest_reg > current_time:
             return RegistrationEligibility(
-                can_register_now=False,
-                can_register_later=True,
+                registration_disallowed=False,
+                is_registration_delayed=True,
                 reason=constants.RegistrationEligibilityReason.PENALTY_INDUCED_DELAYED_REGISTRATION,
-                delay_until=earliest_reg,
+                earliest_registration_time=earliest_reg
             )
 
         return RegistrationEligibility(
-            can_register_now=True,
+            earliest_registration_time=earliest_reg 
         )
 
     def can_register(

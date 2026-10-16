@@ -36,7 +36,8 @@ from lego.apps.events.exceptions import (
     RegistrationsExistInPool,
 )
 from lego.apps.events.filters import EventsFilterSet
-from lego.apps.events.models import Event, Pool, Registration, RegistrationEligibilityCache
+from lego.apps.events.models import Event, Pool, Registration
+from lego.apps.events.eligibility_cache import RegistrationEligibilityCache
 from lego.apps.events.permissions import EventTypePermission
 from lego.apps.events.serializers.events import (
     EventAdministrateAllergiesSerializer, EventAdministrateSerializer,
@@ -409,9 +410,14 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     )
     def registration_eligibility(self, request, *args, **kwargs):
         event = self.get_object()
+
         if not get_permission_handler(Event).has_perm(request.user, VIEW, obj=event):
             raise PermissionDenied()
-        return Response(get_registration_eligibility(event=event, user=request.user))
+
+        eligibility = RegistrationEligibilityCache.get(event=event, user=request.user)
+        serializer = RegistrationEligibilitySerializer(eligibility)
+
+        return Response(serializer.data)
 
 
 class PoolViewSet(

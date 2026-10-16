@@ -12,7 +12,7 @@ from lego import celery_app
 from lego.apps.action_handlers.events import handle_event
 from lego.apps.events import constants
 from lego.apps.events.exceptions import EventHasClosed, WebhookDidNotFindRegistration
-from lego.apps.events.models import Event, Registration
+from lego.apps.events.models import Event, Registration, RegistrationEligibility
 from lego.apps.events.notifications import EventPaymentOverdueCreatorNotification
 from lego.apps.events.serializers.registrations import (
     StripeChargeSerializer,
@@ -599,6 +599,16 @@ def create_user_registration_signup_eligibility_cache(self, logger_context=None)
 
     
 
+def evaluate_cache_entry_validity(user_eligibility: RegistrationEligibility, user: User):
+    """
+    Evaluates if a regsitration eligibility cache entry is still valid. Eligibility checks run every 30 minutes.
+    An entry's validity is determined by the following factors:
+    
+    1. Mismatch between user penalties and cached penalties
+    2. 
+    """
+    pass
+    
     
 def generate_event_registration_eligibility_cache(event_id):
     events = Event.objects.filter(
@@ -610,4 +620,5 @@ def generate_event_registration_eligibility_cache(event_id):
 
     for event in events:
         for user in users:
+
             eligibility = Event.evaluate_registration_eligibility(events, user, event.start_time)
