@@ -11,7 +11,7 @@ dependencies = [
     "ipython==9.17.1",
     "psycopg2-binary==2.9.13",
     "pyyaml==6.0.3",
-    "redis==4.5.5",
+    "redis==8.1.0",
     "hiredis==3.4.1",
     "celery>=5.6.3,<6",
     "stripe==3.4.0",
