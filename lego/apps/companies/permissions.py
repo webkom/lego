@@ -12,6 +12,8 @@ class CompanyPermissionHandler(PermissionHandler):
 class CompanyAdminPermissionHandler(PermissionHandler):
     default_keyword_permission = "/sudo/admin/bdb/{perm}/"
 
+    permission_map = {"event_statistics": ["/sudo/admin/bdb/view/"]}
+
 
 class NestedCompanyPermissionHandler(CompanyPermissionHandler):
     """
