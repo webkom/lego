@@ -424,6 +424,7 @@ class FilterCompaniesTestCase(BaseAPITestCase):
         self.assertEqual(company_response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(company_response.json()["results"]), 2)
 
+
 class CompanyEventStatisticsTestCase(BaseAPITestCase):
     fixtures = ["test_abakus_groups.yaml", "test_companies.yaml", "test_users.yaml"]
 
