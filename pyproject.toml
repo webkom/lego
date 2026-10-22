@@ -42,7 +42,7 @@ dependencies = [
     #
     # Logging/errors
     "structlog==26.1.0",
-    "structlog-sentry==1.4.0",
+    "structlog-sentry==2.2.1",
     "sentry-sdk==2.70.0",
     #
     # channels
