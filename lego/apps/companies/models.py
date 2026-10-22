@@ -1,3 +1,4 @@
+from collections.abc import Iterable
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
@@ -23,6 +24,7 @@ from .constants import (
     COMPANY_COURSE_THEMES,
     COMPANY_EVENTS,
     COMPANY_TYPES,
+    INTERESTED,
     OTHER_OFFERS,
     SEMESTER,
     SEMESTER_STATUSES,
@@ -81,6 +83,36 @@ class Company(BasisModel):
     def __str__(self) -> str:
         return self.name
 
+    def infer_semester_statuses(
+        self, semesters: Iterable[Semester]
+    ) -> dict[int, list[str]]:
+        semester_ids = {
+            (semester.year, semester.semester): semester.id for semester in semesters
+        }
+        statuses = {semester_id: set() for semester_id in semester_ids.values()}
+
+        for event_type, start_time in self.events.values_list(
+            "event_type", "start_time"
+        ):
+            start_time = start_time.astimezone(ZoneInfo("Europe/Oslo"))
+            semester = SPRING if start_time.month < 8 else AUTUMN
+            semester_id = semester_ids.get((start_time.year, semester))
+            if semester_id is not None:
+                statuses[semester_id].add(event_type)
+
+        interested_semester_ids = Semester.objects.filter(
+            pk__in=statuses,
+            companyinterest__company=self,
+            companyinterest__deleted=False,
+        ).values_list("pk", flat=True)
+        for semester_id in interested_semester_ids:
+            statuses[semester_id].add(INTERESTED)
+
+        return {
+            semester_id: [status for status in SEMESTER_STATUSES if status in found]
+            for semester_id, found in statuses.items()
+        }
+
 
 class StudentCompanyContact(BasisModel):
     company = models.ForeignKey(
@@ -99,19 +131,14 @@ class CompanyFile(models.Model):
     file = FileField()
 
 
-class SemesterStatus(TimeStampModel):
+class SemesterFiles(TimeStampModel):
     company = models.ForeignKey(
-        Company, related_name="semester_statuses", on_delete=models.CASCADE
+        Company, related_name="semester_files", on_delete=models.CASCADE
     )
     semester = models.ForeignKey(Semester, on_delete=models.CASCADE)
-    contacted_status = ArrayField(
-        models.CharField(choices=SEMESTER_STATUSES, max_length=64),
-        null=True,
-        blank=True,
-    )
-    contract = FileField(related_name="semester_status_contracts")
-    statistics = FileField(related_name="semester_status_statistics")
-    evaluation = FileField(related_name="semester_status_evaluations")
+    contract = FileField(related_name="semester_contracts")
+    statistics = FileField(related_name="semester_statistics")
+    evaluation = FileField(related_name="semester_evaluations")
 
     class Meta:
         unique_together = ("semester", "company")
@@ -138,7 +165,7 @@ class CompanyInterest(PersistentModel, TimeStampModel):
     """
     Either company_name OR company should be null. We prefer to use a Foreign key to
     an existing company when making a Company Interest, because that lets us
-    do things like update the BDB status for that company to "interested".
+    do things like infer the BDB status for that company as "interested".
     It still needs to be possible to register interest without being in the BDB,
     however, in which case company is Null and the string company_name is used instead.
     """

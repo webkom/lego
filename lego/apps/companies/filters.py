@@ -1,18 +1,45 @@
-from django.db.models import F, Q, Value
+from django.db.models import Exists, F, OuterRef, Q, Value
 from django.db.models.functions import Concat
 from django_filters import BooleanFilter, CharFilter, FilterSet
 
+from lego.apps.companies.constants import INTERESTED
 from lego.apps.companies.models import (
     Company,
     CompanyInterest,
     Semester,
     StudentCompanyContact,
 )
+from lego.apps.events.models import Event
 
 
 class AdminCompanyFilterSet(FilterSet):
     name = CharFilter(method="filter_name")
     student_contacts = CharFilter(method="filter_student_contacts")
+    status = CharFilter(method="filter_semester_status")
+
+    def filter_semester_status(self, queryset, name, value):
+        statuses = {status.strip() for status in value.split(",") if status.strip()}
+        if not statuses:
+            return queryset
+
+        events = Event.objects.filter(company=OuterRef("pk"), event_type__in=statuses)
+        interests = CompanyInterest.objects.filter(company=OuterRef("pk"))
+
+        semester_id = self.request.query_params.get("semester_id")
+        if semester_id is not None:
+            semester = Semester.objects.filter(pk=semester_id).first()
+            if semester is None:
+                return queryset.none()
+            events = events.filter(
+                start_time__gte=semester.start_time, start_time__lt=semester.end_time
+            )
+            interests = interests.filter(semesters=semester)
+
+        status_q = Exists(events)
+        if INTERESTED in statuses:
+            status_q |= Exists(interests)
+
+        return queryset.filter(status_q)
 
     def filter_name(self, queryset, name, value):
         if not value:
@@ -47,7 +74,7 @@ class AdminCompanyFilterSet(FilterSet):
 
     class Meta:
         model = Company
-        fields = ["name", "student_contacts"]
+        fields = ["name", "status", "student_contacts"]
 
 
 class CompanyFilterSet(FilterSet):

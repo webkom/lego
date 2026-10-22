@@ -11,7 +11,7 @@ from lego.apps.companies.views import (
     CompanyFilesViewSet,
     CompanyInterestViewSet,
     CompanyViewSet,
-    SemesterStatusViewSet,
+    SemesterFilesViewSet,
     SemesterViewSet,
 )
 from lego.apps.contact.views import ContactFormViewSet
@@ -115,9 +115,9 @@ router.register(
     basename="company-files",
 )
 router.register(
-    r"companies/(?P<company_pk>\d+)/semester-statuses",
-    SemesterStatusViewSet,
-    basename="semester-status",
+    r"companies/(?P<company_pk>\d+)/semester-files",
+    SemesterFilesViewSet,
+    basename="semester-files",
 )
 router.register(
     r"company-interests", CompanyInterestViewSet, basename="company-interest"
