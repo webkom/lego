@@ -415,6 +415,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             raise PermissionDenied()
 
         eligibility = RegistrationEligibilityCache.get(event=event, user=request.user)
+        print(eligibility)
         serializer = RegistrationEligibilitySerializer(eligibility)
 
         return Response(serializer.data)

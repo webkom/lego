@@ -21,6 +21,8 @@ class RegistrationEligibilityCache:
     key = cls.make_key(event.id, user.id)
     cached = cache.get(key)
 
+    print("==========================================GETTING CACHE ENTRY=======================================")
+
     if cached:
       data = RegistrationEligibility.from_json(cached)
     #   earliest = datetime.fromisoformat(data["earliest_registration_time"])
