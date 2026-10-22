@@ -162,7 +162,7 @@ class LendingRequestViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         ordering = self.request.query_params.get("ordering", None)
         if ordering in ["created_at", "-created_at"]:
             return ordering
-        return "created_at"
+        return "-created_at"
 
     def get_queryset(self):
         user = self.request.user
