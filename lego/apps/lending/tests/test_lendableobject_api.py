@@ -408,9 +408,7 @@ class LendableObjectAvailabilityTestCase(BaseAPITestCase):
 
     def test_unauthenticated(self):
         date_after = self.start_of_month.strftime("%Y-%m-%d")
-        date_before = (
-            self.start_of_month + timedelta(days=10)
-        ).strftime("%Y-%m-%d")
+        date_before = (self.start_of_month + timedelta(days=10)).strftime("%Y-%m-%d")
 
         url = get_availability_url(
             self.lendable_object.pk,
@@ -428,9 +426,7 @@ class LendableObjectAvailabilityTestCase(BaseAPITestCase):
         self.client.force_authenticate(user=user_without_perms)
 
         date_after = self.start_of_month.strftime("%Y-%m-%d")
-        date_before = (
-            self.start_of_month + timedelta(days=10)
-        ).strftime("%Y-%m-%d")
+        date_before = (self.start_of_month + timedelta(days=10)).strftime("%Y-%m-%d")
 
         url = get_availability_url(
             self.lendable_object.pk,
@@ -487,9 +483,7 @@ class LendableObjectAvailabilityTestCase(BaseAPITestCase):
         )
 
         date_after = self.start_of_month.strftime("%Y-%m-%d")
-        date_before = (
-            self.start_of_month + timedelta(days=10)
-        ).strftime("%Y-%m-%d")
+        date_before = (self.start_of_month + timedelta(days=10)).strftime("%Y-%m-%d")
 
         url = get_availability_url(
             self.lendable_object.pk,
@@ -556,10 +550,7 @@ class LendableObjectAvailabilityTestCase(BaseAPITestCase):
             kwargs={"pk": self.lendable_object.pk},
         )
 
-        url = (
-            f"{base_url}"
-            f"?date_after={self.start_of_month.strftime('%Y-%m-%d')}"
-        )
+        url = f"{base_url}?date_after={self.start_of_month.strftime('%Y-%m-%d')}"
 
         response = self.client.get(url)
 
