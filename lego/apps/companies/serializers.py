@@ -4,7 +4,6 @@ from rest_framework import serializers
 from rest_framework.fields import CharField
 
 from lego.apps.comments.serializers.comments import CommentSerializer
-from lego.apps.companies.constants import INTERESTED, NOT_CONTACTED
 from lego.apps.companies.fields import SemesterField
 from lego.apps.companies.models import (
     Company,
@@ -12,7 +11,7 @@ from lego.apps.companies.models import (
     CompanyFile,
     CompanyInterest,
     Semester,
-    SemesterStatus,
+    SemesterFiles,
     StudentCompanyContact,
 )
 from lego.apps.files.fields import FileField, ImageField
@@ -27,15 +26,12 @@ class SemesterSerializer(BasisModelSerializer):
         fields = ("id", "year", "semester", "active_interest_form")
 
 
-class SemesterStatusSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SemesterStatus
-        fields = ("id", "semester", "contacted_status")
-
-    def create(self, validated_data):
-        company = Company.objects.get(pk=self.context["view"].kwargs["company_pk"])
-        validated_data["company"] = company
-        return super().create(validated_data)
+def serialize_semester_statuses(company, semesters):
+    return [
+        {"semester": semester_id, "statuses": statuses}
+        for semester_id, statuses in company.infer_semester_statuses(semesters).items()
+        if statuses
+    ]
 
 
 class StudentCompanyContactSerializer(BasisModelSerializer):
@@ -47,7 +43,7 @@ class StudentCompanyContactSerializer(BasisModelSerializer):
         fields = ("id", "company", "user", "semester")
 
 
-class SemesterStatusDetailSerializer(SemesterStatusSerializer):
+class SemesterFilesSerializer(serializers.ModelSerializer):
     contract = FileField(required=False, allow_null=True)
     statistics = FileField(required=False, allow_null=True)
     evaluation = FileField(required=False, allow_null=True)
@@ -57,11 +53,10 @@ class SemesterStatusDetailSerializer(SemesterStatusSerializer):
     evaluation_name = CharField(source="evaluation_id", read_only=True)
 
     class Meta:
-        model = SemesterStatus
+        model = SemesterFiles
         fields = (
             "id",
             "semester",
-            "contacted_status",
             "contract",
             "statistics",
             "evaluation",
@@ -69,6 +64,11 @@ class SemesterStatusDetailSerializer(SemesterStatusSerializer):
             "statistics_name",
             "evaluation_name",
         )
+
+    def create(self, validated_data):
+        company = Company.objects.get(pk=self.context["view"].kwargs["company_pk"])
+        validated_data["company"] = company
+        return super().create(validated_data)
 
 
 class CompanyContactSerializer(BasisModelSerializer):
@@ -163,16 +163,7 @@ class CompanyAdminListSerializer(BasisModelSerializer):
         return StudentCompanyContactSerializer(queryset, many=True).data
 
     def get_semester_statuses(self, obj):
-        semester_id = self.context.get("semester_id")
-
-        if semester_id is None:
-            queryset = SemesterStatus.objects.filter(company=obj)
-        else:
-            queryset = SemesterStatus.objects.filter(
-                company=obj, semester_id=semester_id
-            )
-
-        return SemesterStatusSerializer(queryset, many=True).data
+        return serialize_semester_statuses(obj, self.context["semesters"])
 
 
 class CompanyDetailSerializer(BasisModelSerializer):
@@ -211,7 +202,8 @@ class CompanyAdminDetailSerializer(BasisModelSerializer):
     content_target = CharField(read_only=True)
 
     student_contacts = StudentCompanyContactSerializer(many=True, required=False)
-    semester_statuses = SemesterStatusDetailSerializer(many=True, read_only=True)
+    semester_statuses = serializers.SerializerMethodField()
+    semester_files = SemesterFilesSerializer(many=True, read_only=True)
     company_contacts = CompanyContactSerializer(many=True, read_only=True)
 
     logo = ImageField(required=False, options={"height": 500})
@@ -232,10 +224,14 @@ class CompanyAdminDetailSerializer(BasisModelSerializer):
             "comments",
             "content_target",
             "semester_statuses",
+            "semester_files",
             "logo",
             "files",
             "company_contacts",
         )
+
+    def get_semester_statuses(self, obj):
+        return serialize_semester_statuses(obj, Semester.objects.all())
 
     def update(self, instance, validated_data):
         updated_student_contacts = validated_data.pop("student_contacts", [])
@@ -299,28 +295,12 @@ class CompanyInterestCreateAndUpdateSerializer(serializers.ModelSerializer):
             "wants_thursday_event",
         )
 
-    def update_company_interest_bdb(self, company_interest):
-        company = company_interest.company
-        for semester in company_interest.semesters.all():
-            if company:
-                semester_status, created = SemesterStatus.objects.get_or_create(
-                    semester=semester,
-                    company=company,
-                    defaults={"contacted_status": []},
-                )
-                if len(semester_status.contacted_status) == 0:
-                    semester_status.contacted_status.append(INTERESTED)
-                elif semester_status.contacted_status[0] == NOT_CONTACTED:
-                    semester_status.contacted_status[0] = INTERESTED
-                semester_status.save()
-
     def create(self, validated_data):
         with transaction.atomic():
             semesters = validated_data.pop("semesters")
             company_interest = CompanyInterest.objects.create(**validated_data)
             company_interest.semesters.add(*semesters)
             company_interest.save()
-            self.update_company_interest_bdb(company_interest)
             return company_interest
 
     def update(self, instance, validated_data):
@@ -329,7 +309,6 @@ class CompanyInterestCreateAndUpdateSerializer(serializers.ModelSerializer):
             updated_instance = super().update(instance, validated_data)
             updated_instance.semesters.add(*semesters)
             updated_instance.save()
-            self.update_company_interest_bdb(updated_instance)
             return updated_instance
 
 

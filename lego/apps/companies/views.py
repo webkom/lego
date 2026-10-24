@@ -20,7 +20,7 @@ from lego.apps.companies.models import (
     CompanyFile,
     CompanyInterest,
     Semester,
-    SemesterStatus,
+    SemesterFiles,
 )
 from lego.apps.companies.permissions import CompanyAdminPermissionHandler
 from lego.apps.companies.serializers import (
@@ -33,9 +33,8 @@ from lego.apps.companies.serializers import (
     CompanyInterestListSerializer,
     CompanyInterestSerializer,
     CompanyListSerializer,
+    SemesterFilesSerializer,
     SemesterSerializer,
-    SemesterStatusDetailSerializer,
-    SemesterStatusSerializer,
 )
 from lego.apps.events import constants as event_constants
 from lego.apps.events.models import Pool
@@ -53,7 +52,7 @@ from .constants import (
 
 
 class AdminCompanyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
-    queryset = Company.objects.all().prefetch_related("semester_statuses", "files")
+    queryset = Company.objects.all().prefetch_related("semester_files", "files")
     filterset_class = AdminCompanyFilterSet
     permission_handler = CompanyAdminPermissionHandler()
     ordering_fields = ["name", "created_at"]
@@ -64,7 +63,10 @@ class AdminCompanyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
         if self.action == "list":
             semester_id = self.request.query_params.get("semester_id", None)
-            context.update({"semester_id": semester_id})
+            semesters = Semester.objects.all()
+            if semester_id is not None:
+                semesters = semesters.filter(pk=semester_id)
+            context.update({"semester_id": semester_id, "semesters": list(semesters)})
 
         return context
 
@@ -183,22 +185,16 @@ class CompanyFilesViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         return CompanyFile.objects.filter(company=company_id)
 
 
-class SemesterStatusViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
-    queryset = SemesterStatus.objects.all()
-    serializer_class = SemesterStatusDetailSerializer
+class SemesterFilesViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
+    queryset = SemesterFiles.objects.all()
+    serializer_class = SemesterFilesSerializer
 
     def get_queryset(self):
         if self.request is None:
-            return SemesterStatus.objects.none()
+            return SemesterFiles.objects.none()
 
         company_id = self.kwargs["company_pk"]
-        return SemesterStatus.objects.filter(company=company_id)
-
-    def get_serializer_class(self):
-        if self.action == "list":
-            return SemesterStatusSerializer
-
-        return super().get_serializer_class()
+        return SemesterFiles.objects.filter(company=company_id)
 
 
 class CompanyContactViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):

@@ -30,12 +30,11 @@
     description: 'Webkom er webkom'
     phone: ''
 
-- model: companies.SemesterStatus
+- model: companies.SemesterFiles
   pk: 1
   fields:
     semester: 1
     company: 1
-    contacted_status: ['interested']
 
 - model: companies.StudentCompanyContact
   pk: 1

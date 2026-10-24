@@ -1,5 +1,7 @@
 from django.db import models
 
+from lego.apps.events.constants import EVENT_TYPES
+
 SPRING = "spring"
 AUTUMN = "autumn"
 
@@ -134,21 +136,6 @@ TRANSLATED_COURSE_THEMES = {
     COMPANY_COURSE_THEMES.FINTECH: "Finansiell teknologi",
 }
 
-CONTACT_IN_OSLO = "contact_in_oslo"
 INTERESTED = "interested"
-NOT_INTERESTED = "not_interested"
-CONTACTED = "contacted"
-NOT_CONTACTED = "not_contacted"
 
-SEMESTER_STATUSES = (
-    (COMPANY_PRESENTATION, COMPANY_PRESENTATION),
-    (COURSE, COURSE),
-    (BREAKFAST_TALK, BREAKFAST_TALK),
-    (LUNCH_PRESENTATION, LUNCH_PRESENTATION),
-    (BEDEX, BEDEX),
-    (CONTACT_IN_OSLO, CONTACT_IN_OSLO),
-    (INTERESTED, INTERESTED),
-    (NOT_INTERESTED, NOT_INTERESTED),
-    (CONTACTED, CONTACTED),
-    (NOT_CONTACTED, NOT_CONTACTED),
-)
+SEMESTER_STATUSES = (*(event_type for event_type, _ in EVENT_TYPES), INTERESTED)
