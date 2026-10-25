@@ -25,6 +25,7 @@ from .constants import (
     COMPANY_EVENTS,
     COMPANY_TYPES,
     INTERESTED,
+    JOB_POSTING,
     OTHER_OFFERS,
     SEMESTER,
     SEMESTER_STATUSES,
@@ -91,14 +92,20 @@ class Company(BasisModel):
         }
         statuses = {semester_id: set() for semester_id in semester_ids.values()}
 
+        def add_status(status: str, time: datetime) -> None:
+            time = time.astimezone(ZoneInfo("Europe/Oslo"))
+            semester = SPRING if time.month < 8 else AUTUMN
+            semester_id = semester_ids.get((time.year, semester))
+            if semester_id is not None:
+                statuses[semester_id].add(status)
+
         for event_type, start_time in self.events.values_list(
             "event_type", "start_time"
         ):
-            start_time = start_time.astimezone(ZoneInfo("Europe/Oslo"))
-            semester = SPRING if start_time.month < 8 else AUTUMN
-            semester_id = semester_ids.get((start_time.year, semester))
-            if semester_id is not None:
-                statuses[semester_id].add(event_type)
+            add_status(event_type, start_time)
+
+        for visible_from in self.joblistings.values_list("visible_from", flat=True):
+            add_status(JOB_POSTING, visible_from)
 
         interested_semester_ids = Semester.objects.filter(
             pk__in=statuses,
