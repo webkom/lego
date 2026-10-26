@@ -2,7 +2,7 @@ from django.db.models import Exists, F, OuterRef, Q, Value
 from django.db.models.functions import Concat
 from django_filters import BooleanFilter, CharFilter, FilterSet
 
-from lego.apps.companies.constants import INTERESTED
+from lego.apps.companies.constants import INTERESTED, JOB_POSTING
 from lego.apps.companies.models import (
     Company,
     CompanyInterest,
@@ -10,6 +10,7 @@ from lego.apps.companies.models import (
     StudentCompanyContact,
 )
 from lego.apps.events.models import Event
+from lego.apps.joblistings.models import Joblisting
 
 
 class AdminCompanyFilterSet(FilterSet):
@@ -23,6 +24,7 @@ class AdminCompanyFilterSet(FilterSet):
             return queryset
 
         events = Event.objects.filter(company=OuterRef("pk"), event_type__in=statuses)
+        joblistings = Joblisting.objects.filter(company=OuterRef("pk"))
         interests = CompanyInterest.objects.filter(company=OuterRef("pk"))
 
         semester_id = self.request.query_params.get("semester_id")
@@ -33,9 +35,15 @@ class AdminCompanyFilterSet(FilterSet):
             events = events.filter(
                 start_time__gte=semester.start_time, start_time__lt=semester.end_time
             )
+            joblistings = joblistings.filter(
+                visible_from__gte=semester.start_time,
+                visible_from__lt=semester.end_time,
+            )
             interests = interests.filter(semesters=semester)
 
         status_q = Exists(events)
+        if JOB_POSTING in statuses:
+            status_q |= Exists(joblistings)
         if INTERESTED in statuses:
             status_q |= Exists(interests)
 

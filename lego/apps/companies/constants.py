@@ -137,5 +137,10 @@ TRANSLATED_COURSE_THEMES = {
 }
 
 INTERESTED = "interested"
+JOB_POSTING = "job_posting"
 
-SEMESTER_STATUSES = (*(event_type for event_type, _ in EVENT_TYPES), INTERESTED)
+SEMESTER_STATUSES = (
+    *(event_type for event_type, _ in EVENT_TYPES),
+    JOB_POSTING,
+    INTERESTED,
+)

@@ -13,6 +13,7 @@ from lego.apps.companies.models import (
 from lego.apps.events.constants import SUCCESS_REGISTER, SUCCESS_UNREGISTER
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.tests.utils import get_dummy_users
+from lego.apps.joblistings.models import Joblisting
 from lego.apps.users.models import AbakusGroup, User
 from lego.utils.test_utils import BaseAPITestCase
 
@@ -380,6 +381,16 @@ def _create_event(company, event_type, start_time):
     )
 
 
+def _create_joblisting(company, visible_from):
+    return Joblisting.objects.create(
+        title="Joblisting",
+        company=company,
+        visible_from=visible_from,
+        visible_to=visible_from,
+        job_type="full_time",
+    )
+
+
 def _create_company_interest(company, semesters):
     company_interest = CompanyInterest.objects.create(
         company=company, contact_person="Test", mail="test@test.no"
@@ -432,6 +443,25 @@ class InferSemesterStatusTestCase(BaseAPITestCase):
         self.assertEqual(
             self.itera.infer_semester_statuses([self.spring, self.autumn]),
             {self.spring.pk: [], self.autumn.pk: ["course", "interested"]},
+        )
+
+    def test_job_postings_are_placed_by_visible_from(self):
+        oslo = ZoneInfo("Europe/Oslo")
+        _create_joblisting(self.itera, datetime(2017, 2, 1, tzinfo=oslo))
+        # 31 July 23:30 UTC is 1 August in Oslo, which is in the autumn semester
+        _create_joblisting(
+            self.facebook, datetime(2017, 7, 31, 23, 30, tzinfo=ZoneInfo("UTC"))
+        )
+        self.assertEqual(
+            self.itera.infer_semester_statuses([self.spring, self.autumn]),
+            {self.spring.pk: ["job_posting"], self.autumn.pk: ["interested"]},
+        )
+        self.assertEqual(
+            self.facebook.infer_semester_statuses([self.spring, self.autumn]),
+            {
+                self.spring.pk: ["course", "interested"],
+                self.autumn.pk: ["company_presentation", "job_posting"],
+            },
         )
 
     def test_deleted_events_and_interests_are_ignored(self):
@@ -518,6 +548,20 @@ class FilterCompaniesTestCase(BaseAPITestCase):
         self.assertEqual(
             self._filter_by_status({"status": "course", "semester_id": 2}), []
         )
+
+    def test_filter_by_status_job_posting(self):
+        self._create_status_data()
+        oslo = ZoneInfo("Europe/Oslo")
+        webkom = Company.objects.get(name="Webkom")
+        _create_joblisting(webkom, datetime(2017, 2, 1, tzinfo=oslo))
+        self.assertEqual(
+            self._filter_by_status({"status": "job_posting", "semester_id": 1}),
+            ["Webkom"],
+        )
+        self.assertEqual(
+            self._filter_by_status({"status": "job_posting", "semester_id": 2}), []
+        )
+        self.assertEqual(self._filter_by_status({"status": "job_posting"}), ["Webkom"])
 
     def test_filter_by_multiple_statuses(self):
         self._create_status_data()
