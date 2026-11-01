@@ -145,6 +145,7 @@ OAUTH2_PROVIDER = {
         ),
         "all": "Gir tilgang til all brukerinfo. Kan også gjøre ting som deg",
     },
+    "ALLOWED_REDIRECT_URI_SCHEMES": ["http", "https", "abakus"]
 }
 
 ROOT_URLCONF = "lego.urls"
