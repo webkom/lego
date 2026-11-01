@@ -8,6 +8,7 @@ from lego.apps.articles.serializers import PublicArticleSerializer
 from lego.apps.events.constants import INTEREST_EVENT, SUCCESS_UNREGISTER
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.serializers.events import FrontpageEventSerializer
+from lego.apps.frontpage.serializers import FrontpageSerializer
 from lego.apps.permissions.constants import LIST
 from lego.apps.permissions.utils import get_permission_handler
 from lego.apps.polls.models import Poll
@@ -19,6 +20,7 @@ from lego.apps.polls.serializers import (
 
 class FrontpageViewSet(viewsets.ViewSet):
     permission_classes = (permissions.AllowAny,)
+    serializer_class = FrontpageSerializer
 
     def list(self, request):
         cached_penalties = (

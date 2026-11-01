@@ -592,33 +592,3 @@ def notify_event_creator_when_payment_overdue(self, logger_context=None):
                 event_id=event.id,
                 creator=event.created_by,
             )
-@celery_app.task(serializer="json",bind=True, base=AbakusTask)
-def create_user_registration_signup_eligibility_cache(self, logger_context=None):
-    self.setup_logger(logger_context) 
-    # Create a cache of registration eligibility for all users and events that are opening for registration in the next hour.
-
-    
-
-def evaluate_cache_entry_validity(user_eligibility: RegistrationEligibility, user: User):
-    """
-    Evaluates if a regsitration eligibility cache entry is still valid. Eligibility checks run every 30 minutes.
-    An entry's validity is determined by the following factors:
-    
-    1. Mismatch between user penalties and cached penalties
-    2. 
-    """
-    pass
-    
-    
-def generate_event_registration_eligibility_cache(event_id):
-    events = Event.objects.filter(
-        activation_date__gt=timezone.now(),
-        activation_date__lte=timezone.now() + timedelta(minutes=60),
-    )
-
-    users = User.objects.all() 
-
-    for event in events:
-        for user in users:
-
-            eligibility = Event.evaluate_registration_eligibility(events, user, event.start_time)

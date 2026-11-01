@@ -17,17 +17,21 @@ class RegistrationEligibilityCache:
 
   @classmethod
   def get(cls, event: Event, user: User) -> dict[str, Any]:
-    """"""
+    """
+    Gets a cache entry for the given event and user. If no cache entry exists, it evaluates the registration eligibility and caches the result. 
+    """
     key = cls.make_key(event.id, user.id)
     cached = cache.get(key)
 
     print("==========================================GETTING CACHE ENTRY=======================================")
 
-    if cached:
-      data = RegistrationEligibility.from_json(cached)
+
+    # Temporarily skip caching for dev purposes
+    # if cached:
+      # data = RegistrationEligibility.from_json(cached)
     #   earliest = datetime.fromisoformat(data["earliest_registration_time"])
     #   data["can_register_now"] = not data["is_blocked"] and timezone.now() >= earliest
-      return data
+      # return data
 
     # Cache miss case
     eval_result = event.evaluate_registration_eligibility(user=user)

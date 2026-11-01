@@ -293,6 +293,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         if penalties > 2:
             return RegistrationEligibility(
                 will_be_waiting_list=True,
+                penalties=penalties,
                 reason=constants.RegistrationEligibilityReason.TOO_MANY_PENALTIES,
             )
 
@@ -302,6 +303,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
         if earliest_reg and earliest_reg > current_time:
             return RegistrationEligibility(
+                penalties=penalties,
                 registration_disallowed=False,
                 is_registration_delayed=True,
                 reason=constants.RegistrationEligibilityReason.PENALTY_INDUCED_DELAYED_REGISTRATION,
