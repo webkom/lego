@@ -450,7 +450,7 @@ class User(
         blank=True,
     )
 
-    christmas_slots = ArrayField(models.IntegerField(), default=list, blank=True)
+    christmas_slots = ArrayField(models.BigIntegerField(), default=list, blank=True)
 
     objects = AbakusUserManager()  # type: ignore
 
@@ -643,9 +643,6 @@ class User(
     def get_command_suggestions(self):
         cmds = self.command_suggestions or []
         return cmds[: constants.COMMAND_SUGGESTION_LENGTH]
-
-    def get_christmas_slots(self):
-        return self.christmas_slots
 
 
 class Penalty(BasisModel):
