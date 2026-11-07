@@ -59,3 +59,8 @@ class PublicUserListField(serializers.ManyRelatedField):
 
         kwargs["child_relation"] = PublicUserField(**field_kwargs)
         super().__init__(**kwargs)
+
+
+class ChristmasSlotsField(serializers.ListField):
+    def to_representation(self, value):
+        return [v % 100 for v in value]
