@@ -36,7 +36,7 @@ class AbakusTask(Task):
         log.info("async_task_created", task_id=async_result.id, task_name=self.name)
         return async_result
 
-    def setup_logger(self, logger_context):
+    def setup_logger(self, logger_context: dict | None) -> None:
         logger_context = logger_context or {}
         logger_context["task_name"] = self.name
         logger_context["task_id"] = self.request.id
