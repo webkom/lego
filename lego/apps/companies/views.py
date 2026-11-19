@@ -37,7 +37,7 @@ from lego.apps.companies.serializers import (
     SemesterSerializer,
 )
 from lego.apps.events import constants as event_constants
-from lego.apps.events.models import Pool
+from lego.apps.events.models import Event, Pool
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.constants import EDIT
 
@@ -75,6 +75,23 @@ class AdminCompanyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             return CompanyAdminListSerializer
 
         return CompanyAdminDetailSerializer
+
+    @action(detail=False, methods=["GET"], url_path="event-count")
+    def event_count(self, request, *args, **kwargs):
+        try:
+            semester = Semester.objects.get(pk=int(request.query_params["semester_id"]))
+        except (KeyError, ValueError, Semester.DoesNotExist):
+            return Response(
+                {"detail": "semester_id must be a valid semester id"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        event_count = Event.objects.filter(
+            company__isnull=False,
+            start_time__gte=semester.start_time,
+            start_time__lt=semester.end_time,
+        ).count()
+        return Response({"event_count": event_count})
 
     @action(detail=True, methods=["GET"], url_path="event-statistics")
     def event_statistics(self, request, *args, **kwargs):
