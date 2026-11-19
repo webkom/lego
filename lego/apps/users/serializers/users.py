@@ -1,6 +1,6 @@
-from datetime import datetime, UTC
-from django.utils import timezone
+from datetime import UTC, datetime
 
+from django.utils import timezone
 from rest_framework import exceptions, serializers
 
 from lego.apps.achievements.serializers import AchievementSerializer
