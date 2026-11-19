@@ -257,12 +257,13 @@ class CurrentUserSerializer(serializers.ModelSerializer):
         return username
 
     def validate_christmas_slots(self, slots):
-        deadline = datetime(2026, 12, 31, 23, 59, 59, tzinfo=UTC)
         now = timezone.now()
+        year = now.year if now.month == 12 else now.year - 1
+        deadline = datetime(year, 12, 31, 23, 59, 59, tzinfo=UTC)
 
         if now > deadline:
             raise serializers.ValidationError(
-                "This field cannot be edited after 31st of December 2026."
+                f"This field cannot be edited after 31st of December {year}."
             )
         for slot in slots:
             if slot <= 0 or slot > now.day:

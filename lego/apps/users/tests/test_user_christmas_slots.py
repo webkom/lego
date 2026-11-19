@@ -38,7 +38,8 @@ class UserChristmasSlotsTestCase(BaseAPITestCase):
         )
         self.assertEqual(response.json()["christmasSlots"], valid_christmas_slots)
 
-    def test_invalid_christmas_slots(self):
+    @mock.patch("django.utils.timezone.now", return_value=fake_time(2026, 12, 10))
+    def test_invalid_christmas_slots(self, mock_now):
         invalid_christmas_slots1 = [0, 6, 7]
         invalid_christmas_slots2 = [6, 7, 25]
 
@@ -50,13 +51,23 @@ class UserChristmasSlotsTestCase(BaseAPITestCase):
         )
 
         self.assertEqual(response1.status_code, 400)
+        self.assertEqual(
+            response1.json()["christmasSlots"], ["There is an invalid slot number."]
+        )
         self.assertEqual(response2.status_code, 400)
+        self.assertEqual(
+            response2.json()["christmasSlots"], ["There is an invalid slot number."]
+        )
 
-    @mock.patch("django.utils.timezone.now", return_value=fake_time(2027, 1, 1))
+    @mock.patch("django.utils.timezone.now", return_value=fake_time(2027, 1, 8))
     def test_submit_after_deadline(self, mock_now):
         valid_christmas_slots = [6, 7]
         response = self.client.patch(
-            self.url, {"christmasSlots": valid_christmas_slots}
+            self.url, {"christmasSlots": valid_christmas_slots}, format="json"
         )
 
         self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json()["christmasSlots"],
+            ["This field cannot be edited after 31st of December 2026."],
+        )
