@@ -1,4 +1,5 @@
-from datetime import datetime
+from datetime import datetime, UTC
+from django.utils import timezone
 
 from rest_framework import exceptions, serializers
 
@@ -256,8 +257,8 @@ class CurrentUserSerializer(serializers.ModelSerializer):
         return username
 
     def validate_christmas_slots(self, slots):
-        deadline = datetime(2026, 12, 31, 23, 59, 59)
-        now = datetime.now()
+        deadline = datetime(2026, 12, 31, 23, 59, 59, tzinfo=UTC)
+        now = timezone.now()
 
         if now > deadline:
             raise serializers.ValidationError(
