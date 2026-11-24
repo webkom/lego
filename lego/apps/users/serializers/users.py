@@ -1,5 +1,6 @@
-from datetime import datetime
+from datetime import UTC, datetime
 
+from django.utils import timezone
 from rest_framework import exceptions, serializers
 
 from lego.apps.achievements.serializers import AchievementSerializer
@@ -8,6 +9,7 @@ from lego.apps.email.serializers import PublicEmailListSerializer
 from lego.apps.files.fields import ImageField
 from lego.apps.ical.models import ICalToken
 from lego.apps.users import constants
+from lego.apps.users.fields import ChristmasSlotsField
 from lego.apps.users.models import AbakusGroup, Penalty, PhotoConsent, User
 from lego.apps.users.serializers.abakus_groups import PublicAbakusGroupSerializer
 from lego.apps.users.serializers.memberships import (
@@ -220,7 +222,7 @@ class CurrentUserSerializer(serializers.ModelSerializer):
     achievements = AchievementSerializer(many=True)
     achievements_score = serializers.SerializerMethodField()
     command_suggestions = serializers.SerializerMethodField()
-    christmas_slots = serializers.ListField(child=serializers.IntegerField())
+    christmas_slots = ChristmasSlotsField(child=serializers.IntegerField())
 
     def get_user_ical_token(self, user):
         ical_token = ICalToken.objects.get_or_create(user=user)[0]
@@ -255,12 +257,27 @@ class CurrentUserSerializer(serializers.ModelSerializer):
         return username
 
     def validate_christmas_slots(self, slots):
-        deadline = datetime(2025, 12, 31, 23, 59, 59)
-        if datetime.now() > deadline:
+        now = timezone.now()
+        year = now.year if now.month == 12 else now.year - 1
+        deadline = datetime(year, 12, 31, 23, 59, 59, tzinfo=UTC)
+
+        if now > deadline:
             raise serializers.ValidationError(
-                "This field cannot be edited after 31st December 2025."
+                f"This field cannot be edited after 31st of December {year}."
             )
-        return slots
+        for slot in slots:
+            if slot <= 0 or slot > now.day:
+                raise serializers.ValidationError("There is an invalid slot number.")
+
+        stored = {s % 100: s for s in self.instance.christmas_slots}
+        result = {}
+        for slot in slots:
+            if slot in stored:
+                result[slot] = stored[slot]
+            else:
+                result[slot] = int(now.timestamp()) * 100 + slot
+
+        return list(result.values())
 
     def get_achievements_score(self, obj):
         return achievement_score_percentage(obj.achievements_score)
