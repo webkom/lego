@@ -73,6 +73,10 @@ def _get_bdb_event_statistics_url(pk):
     return reverse("api:v1:bdb-event-statistics", kwargs={"pk": pk})
 
 
+def _get_bdb_event_count_url():
+    return reverse("api:v1:bdb-event-count")
+
+
 def _get_semester_files_list_url(company_pk):
     return reverse("api:v1:semester-files-list", kwargs={"company_pk": company_pk})
 
@@ -794,3 +798,38 @@ class CompanyEventStatisticsTestCase(BaseAPITestCase):
             _get_bdb_event_statistics_url(self.company.pk), {"from_semester": 1}
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+class CompanyEventCountTestCase(BaseAPITestCase):
+    fixtures = ["test_abakus_groups.yaml", "test_companies.yaml", "test_users.yaml"]
+
+    def setUp(self):
+        self.abakus_user = User.objects.all().first()
+        self.spring = Semester.objects.get(semester="spring", year=2017)
+
+    def _create_event(self, start_time, company):
+        return Event.objects.create(
+            title="Bedpres",
+            company=company,
+            start_time=start_time,
+            end_time=start_time,
+        )
+
+    def test_counts_company_events_in_semester(self):
+        oslo = ZoneInfo("Europe/Oslo")
+        self._create_event(datetime(2017, 3, 1, tzinfo=oslo), Company.objects.get(pk=1))
+        self._create_event(
+            datetime(2017, 7, 31, tzinfo=oslo), Company.objects.get(pk=2)
+        )
+        # Outside the semester or without a company
+        self._create_event(datetime(2017, 8, 1, tzinfo=oslo), Company.objects.get(pk=1))
+        self._create_event(datetime(2017, 3, 1, tzinfo=oslo), None)
+
+        AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+
+        response = self.client.get(
+            _get_bdb_event_count_url(), {"semester_id": self.spring.pk}
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json(), {"eventCount": 2})
