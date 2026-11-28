@@ -48,6 +48,7 @@ class DetailedArticleSerializer(TagSerializerMixin, BasisModelSerializer):
             "pinned",
             "reactions_grouped",
             "youtube_url",
+            "wiggle",
         )
 
 
@@ -102,4 +103,5 @@ class PublicArticleSerializer(TagSerializerMixin, BasisModelSerializer):
             "tags",
             "created_at",
             "pinned",
+            "wiggle",
         )
